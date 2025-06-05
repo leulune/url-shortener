@@ -1,0 +1,46 @@
+services:
+  postgres:
+    image: postgres:15
+    restart: always
+    environment:
+      POSTGRES_USER: francesco
+      POSTGRES_PASSWORD: 12345
+      POSTGRES_DB: shortened-url
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    ports:
+      - '5432:5432'
+    networks:
+      - app-net
+
+  
+  backend:
+    build: ./backend
+    restart: unless-stopped
+    depends_on:
+      - postgres
+    environment:
+      DATABASE_URL: postgresql://francesco:12345@postgres:5432/shortened-url
+    ports:
+      - '3000:3000'
+    env_file:
+      - ./backend/.env
+    networks:
+      - app-net
+  
+
+  frontend:
+    build: ./frontend
+    restart: unless-stopped
+    depends_on:
+      - backend
+    ports:
+      - '5173:5173'
+    networks:
+      - app-net
+
+volumes:
+  pgdata:
+
+networks:
+  app-net:

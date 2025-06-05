@@ -1,0 +1,29 @@
+generator client {
+  provider = "prisma-client-js"
+  binaryTargets = ["native", "linux-arm64-openssl-3.0.x"]
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model ShortUrl {
+  id            String      @id @default(cuid())
+  originalUrl   String
+  shortCode     String      @unique
+  createdAt     DateTime    @default(now())
+  expiresAt     DateTime?
+  clickCount    Int         @default(0)
+
+  redirects     Redirect[]
+}
+
+model Redirect {
+  id            String      @id @default(cuid())
+  ip            String
+  timestamp     DateTime    @default(now())
+  shortUrl      ShortUrl    @relation(fields: [shortUrlId], references: [id], onDelete: Cascade)
+  shortUrlId    String
+}
+
