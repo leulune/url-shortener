@@ -36,8 +36,6 @@ $ npm run test:cov
 
 ## Deployment
 
-const defaultExpirationMs = 7 * 24 * 60 * 60 * 1000; // 7 дней
-
 ```bash
 $ npm install -g @nestjs/mau
 $ mau deploy
